@@ -397,8 +397,15 @@ public class AnimationView extends BaseAnimationView
       public void onPageFinished(WebView view, String url)
       {
         super.onPageFinished(view, url);
-        readabilityWebView.setEnabled(false);
-        
+        try
+        {
+          if (readabilityWebView != null)
+            readabilityWebView.setEnabled(false);
+        }
+        catch (Exception e)
+        {
+          e.printStackTrace();
+        }
         if (listener != null)
           listener.onLoaded();
       }
