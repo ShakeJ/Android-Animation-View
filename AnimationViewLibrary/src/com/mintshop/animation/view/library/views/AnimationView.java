@@ -21,7 +21,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.mintshop.animation.view.library.R;
@@ -93,6 +92,7 @@ public class AnimationView extends BaseAnimationView
     contentTextView = (TextView) inflatedView.findViewById(R.id.center_description_view);
     customViewContainer = (RelativeLayout) inflatedView.findViewById(R.id.container_custom_view);
     readabilityWebView = (WebView) inflatedView.findViewById(R.id.readability_web_view);
+    readabilityWebView.setEnabled(false);
     youtubeViewer = (YoutubeViewer) inflatedView.findViewById(R.id.youtube_viewer);
     
     imageContainer = (RelativeLayout) inflatedView.findViewById(R.id.container_image);
@@ -305,6 +305,15 @@ public class AnimationView extends BaseAnimationView
     }, 1000);
   }
   
+  
+  public void setNextMovie()
+  {
+    if (isYoutubeMode)
+    {
+      youtubeViewer.setNextMovie();
+    }
+  }
+  
   class ImageDownloaderTask extends AsyncTask<String, Integer, Bitmap>
   {
     @Override
@@ -368,6 +377,15 @@ public class AnimationView extends BaseAnimationView
   
   public void startAnimation()
   {
+    try
+    {
+      readabilityWebView.stopLoading();
+    }
+    catch (Exception e)
+    {
+      e.printStackTrace();
+    }
+    
     if (isYoutubeMode)
     {
       Log.w("WARN", "Start Youtube");
@@ -426,9 +444,7 @@ public class AnimationView extends BaseAnimationView
         try
         {
           if (readabilityWebView != null)
-          {
             readabilityWebView.setEnabled(false);
-          }
         }
         catch (Exception e)
         {

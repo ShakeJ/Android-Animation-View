@@ -237,6 +237,14 @@ public class YoutubeViewer extends RelativeLayout
   };
   
   
+  public void setNextMovie()
+  {
+    if (listener != null)
+      listener.onYoutubeViewerFinish();
+    YoutubeViewer.this.setVisibility(View.GONE);
+  }
+  
+  
   private void showNextButton(boolean isShow)
   {
     if (isShow)
@@ -256,9 +264,6 @@ public class YoutubeViewer extends RelativeLayout
       });
     }
     else
-    {
       btnNext.setVisibility(View.GONE);
-      
-    }
   }
 }
