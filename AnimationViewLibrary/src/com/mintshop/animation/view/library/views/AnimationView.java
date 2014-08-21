@@ -229,6 +229,16 @@ public class AnimationView extends BaseAnimationView
     params.addRule(RelativeLayout.CENTER_IN_PARENT);
     
     view.setLayoutParams(params);
+    view.setOnClickListener(new OnClickListener()
+    {
+      
+      @Override
+      public void onClick(View v)
+      {
+        if (listener != null)
+          listener.onViewClick();
+      }
+    });
     
     Handler h = new Handler();
     h.postDelayed(new Runnable()
