@@ -21,6 +21,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.mintshop.animation.view.library.R;
@@ -96,8 +97,9 @@ public class AnimationView extends BaseAnimationView
     
     imageContainer = (RelativeLayout) inflatedView.findViewById(R.id.container_image);
     contentImageView = (ImageView) inflatedView.findViewById(R.id.content_image);
+    
     ImageView imageScrollView = (ImageView) imageContainer.findViewById(R.id.content_image);
-    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, SystemManager.getInstance(context).screenSize().y);
+    RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, SystemManager.getInstance(context).screenSize().y);
     imageScrollView.setLayoutParams(params);
     
     super.setContentImageLayout(imageContainer);
@@ -133,7 +135,7 @@ public class AnimationView extends BaseAnimationView
   {
     super.onConfigurationChanged(newConfig);
     ImageView imageScrollView = (ImageView) imageContainer.findViewById(R.id.content_image);
-    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, SystemManager.getInstance(context).screenSize().y);
+    RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, SystemManager.getInstance(context).screenSize().y);
     imageScrollView.setLayoutParams(params);
   }
   
@@ -149,7 +151,6 @@ public class AnimationView extends BaseAnimationView
   public void setData(final AnimationBean bean)
   {
     this.bean = bean;
-    Log.w("WARN", "AnimationView setData : " + bean.pictureOriginalUrl);
     
     contentTextView.setVisibility(View.GONE);
     customViewContainer.setVisibility(View.GONE);
@@ -166,7 +167,8 @@ public class AnimationView extends BaseAnimationView
     
     if (!TextUtils.isEmpty(bean.pictureOriginalUrl))
     {
-      // 이미지인 경우 
+      // 이미지인 경우
+      Log.w("WARN", "AnimationView setData - Image");
       new ImageDownloaderTask().execute(bean.pictureOriginalUrl);
     }
     else
@@ -174,12 +176,17 @@ public class AnimationView extends BaseAnimationView
       // 텍스트만 있는 경우
       if (!TextUtils.isEmpty(bean.readabilityUrl))
       {
+        Log.w("WARN", "AnimationView setData - Readability");
         contentImageView.setVisibility(View.GONE);
+        customViewContainer.setVisibility(View.GONE);
+        textTitle.setVisibility(View.GONE);
+        
         readabilityWebView.setVisibility(View.VISIBLE);
         loadReadability(bean.readabilityUrl);
       }
       else
       {
+        Log.w("WARN", "AnimationView setData - Center Text");
         contentImageView.setVisibility(View.GONE);
         customViewContainer.setVisibility(View.GONE);
         textTitle.setVisibility(View.GONE);
@@ -207,14 +214,21 @@ public class AnimationView extends BaseAnimationView
   public void setView(View view)
   {
     Log.w("WARN", "AnimationView set CustomView");
-    customViewContainer.removeAllViews();
     
+    customViewContainer.addView(view);
     contentImageView.setVisibility(View.GONE);
     contentTextView.setVisibility(View.GONE);
     textTitle.setVisibility(View.GONE);
-    customViewContainer.setVisibility(View.VISIBLE);
+    youtubeViewer.setVisibility(View.GONE);
     
-    customViewContainer.addView(view);
+    customViewContainer.setVisibility(View.VISIBLE);
+    customViewContainer.getLayoutParams().height = SystemManager.getInstance(context).screenSize().y;
+    customViewContainer.getLayoutParams().width = SystemManager.getInstance(context).screenSize().x;
+    
+    RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) view.getLayoutParams();
+    params.addRule(RelativeLayout.CENTER_IN_PARENT);
+    
+    view.setLayoutParams(params);
     
     Handler h = new Handler();
     h.postDelayed(new Runnable()
@@ -225,7 +239,7 @@ public class AnimationView extends BaseAnimationView
         if (listener != null)
           listener.onLoaded();
       }
-    }, 2000);
+    }, 1000);
   }
   
   
@@ -350,7 +364,9 @@ public class AnimationView extends BaseAnimationView
       youtubeViewer.initialize();
     }
     else
+    {
       startViewAnimation();
+    }
   }
   
   
@@ -400,7 +416,9 @@ public class AnimationView extends BaseAnimationView
         try
         {
           if (readabilityWebView != null)
+          {
             readabilityWebView.setEnabled(false);
+          }
         }
         catch (Exception e)
         {
@@ -415,7 +433,7 @@ public class AnimationView extends BaseAnimationView
       public void onReceivedError(WebView view, int errorCode, String description, String failingUrl)
       {
         if (listener != null)
-          listener.onLoaded();
+          listener.onLoadFail();
       }
     });
     readabilityWebView.getSettings().setJavaScriptEnabled(true);

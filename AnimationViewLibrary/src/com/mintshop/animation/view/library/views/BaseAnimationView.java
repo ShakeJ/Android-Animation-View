@@ -28,7 +28,7 @@ public class BaseAnimationView extends LinearLayout
   public final static int PIVOT_UP_TO_DOWN = 4;
   
   //Animation Attrs
-  public int direction = DIRECTION_UP;
+  public int direction = PIVOT_UP_TO_DOWN;
   protected final static int DELAY_TIME = 1000;
   public int slideShowTime = 1000;
   
@@ -203,40 +203,21 @@ public class BaseAnimationView extends LinearLayout
     }
     
     imageAnimation.setDuration(slideShowTime);
-    descriptionAnimation.setDuration(slideShowTime);
     
     imageAnimation.setAnimationListener(new AnimationListener()
     {
       @Override
       public void onAnimationStart(Animation animation)
       {
+        if (descriptionContainer != null)
+          descriptionContainer.setVisibility(View.VISIBLE);
         imageContainer.setVisibility(View.VISIBLE);
         if (listener != null)
           listener.onAnimationStart();
-      }
-      
-      
-      @Override
-      public void onAnimationRepeat(Animation animation)
-      {
         
-      }
-      
-      
-      @Override
-      public void onAnimationEnd(Animation animation)
-      {
         if (listener != null)
           listener.onAnimationFinish();
       }
-    });
-    descriptionAnimation.setAnimationListener(new AnimationListener()
-    {
-      @Override
-      public void onAnimationStart(Animation animation)
-      {
-        descriptionContainer.setVisibility(View.VISIBLE);
-      }
       
       
       @Override
@@ -249,10 +230,16 @@ public class BaseAnimationView extends LinearLayout
       @Override
       public void onAnimationEnd(Animation animation)
       {
+        
       }
     });
     imageContainer.startAnimation(imageAnimation);
-    descriptionContainer.startAnimation(descriptionAnimation);
+    
+    if (descriptionAnimation != null)
+    {
+      descriptionAnimation.setDuration(slideShowTime);
+      descriptionContainer.startAnimation(descriptionAnimation);
+    }
   }
   
   
@@ -365,14 +352,18 @@ public class BaseAnimationView extends LinearLayout
     });
     
     imageContainer.startAnimation(imageAnimation);
-    descriptionAnimation.setDuration(slideShowTime);
-    descriptionContainer.startAnimation(descriptionAnimation);
+    if (descriptionAnimation != null)
+    {
+      descriptionAnimation.setDuration(slideShowTime);
+      descriptionContainer.startAnimation(descriptionAnimation);
+    }
   }
   
   
   private Animation getRotateAnimation(float start, float end, int direction)
   {
     Rotate3dAnimation rotation = null;
+    
     if (direction == PIVOT_RIGHT_TO_LEFT)
       rotation = new Rotate3dAnimation(start, end, imageContainer.getWidth(), imageContainer.getHeight() / 2, 0.0f, direction);
     else
