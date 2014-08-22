@@ -22,9 +22,9 @@ public class DescriptionView extends BaseAnimationView
   private DescriptionBean bean;
   private View view;
   private RoundedImageView profileImageView;
-  private boolean isUse = false;
   private Bitmap imageBitmap = null;
   private Context context;
+  private TextView textDescription;
   
   
   public DescriptionView(Context context, DescriptionBean bean)
@@ -54,7 +54,6 @@ public class DescriptionView extends BaseAnimationView
   
   public void setData(Context context, DescriptionBean bean)
   {
-    isUse = true;
     this.bean = bean;
     init(context);
   }
@@ -70,7 +69,7 @@ public class DescriptionView extends BaseAnimationView
     TextView name = (TextView) view.findViewById(R.id.content_title);
     TextView subTitle = (TextView) view.findViewById(R.id.content_subtitle);
     TextView leftTitle = (TextView) view.findViewById(R.id.content_left_title);
-    TextView textDescription = (TextView) view.findViewById(R.id.content_description);
+    textDescription = (TextView) view.findViewById(R.id.content_description);
     profileImageView = ((RoundedImageView) view.findViewById(R.id.image_user_profile));
     
     View line = (View) view.findViewById(R.id.line_detail);
@@ -103,6 +102,15 @@ public class DescriptionView extends BaseAnimationView
       }
       addView(view);
     }
+  }
+  
+  
+  public void setContentVisible(boolean isVisible)
+  {
+    if (isVisible)
+      textDescription.setVisibility(View.VISIBLE);
+    else
+      textDescription.setVisibility(View.GONE);
   }
   
   

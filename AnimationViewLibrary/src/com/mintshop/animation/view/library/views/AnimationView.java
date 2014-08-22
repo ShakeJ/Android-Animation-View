@@ -6,6 +6,8 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
+import android.graphics.Bitmap.Config;
+import android.graphics.Canvas;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.text.TextUtils;
@@ -92,7 +94,6 @@ public class AnimationView extends BaseAnimationView
     contentTextView = (TextView) inflatedView.findViewById(R.id.center_description_view);
     customViewContainer = (RelativeLayout) inflatedView.findViewById(R.id.container_custom_view);
     readabilityWebView = (WebView) inflatedView.findViewById(R.id.readability_web_view);
-    readabilityWebView.setEnabled(false);
     youtubeViewer = (YoutubeViewer) inflatedView.findViewById(R.id.youtube_viewer);
     
     imageContainer = (RelativeLayout) inflatedView.findViewById(R.id.container_image);
@@ -177,11 +178,15 @@ public class AnimationView extends BaseAnimationView
       if (!TextUtils.isEmpty(bean.readabilityUrl))
       {
         Log.w("WARN", "AnimationView setData - Readability");
-        contentImageView.setVisibility(View.GONE);
         customViewContainer.setVisibility(View.GONE);
         textTitle.setVisibility(View.GONE);
         
-        readabilityWebView.setVisibility(View.VISIBLE);
+        readabilityWebView.setVisibility(View.INVISIBLE);
+        contentImageView.setVisibility(View.VISIBLE);
+        contentImageView.bringToFront();
+        
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, SystemManager.getInstance(context).screenSize().y);
+        readabilityWebView.setLayoutParams(params);
         loadReadability(bean.readabilityUrl);
       }
       else
@@ -420,6 +425,54 @@ public class AnimationView extends BaseAnimationView
     }
   }
   
+  Handler h = new Handler();
+  Runnable drawingRunnable = new Runnable()
+  {
+    @Override
+    public void run()
+    {
+      try
+      {
+        imageBitmap = Bitmap.createBitmap(SystemManager.getInstance(context).screenSize().x, SystemManager.getInstance(context).screenSize().y, Config.ARGB_8888);
+        Canvas canvas = new Canvas(imageBitmap);
+        readabilityWebView.draw(canvas);
+        contentImageView.setImageBitmap(imageBitmap);
+      }
+      catch (Exception e)
+      {
+        e.printStackTrace();
+      }
+      if (imageBitmap != null)
+      {
+        if (listener != null)
+          listener.onLoaded();
+      }
+      else
+      {
+        Log.w("WARN", "AnimationView setData - WebView Don't loading - Center Text");
+        contentImageView.setVisibility(View.GONE);
+        customViewContainer.setVisibility(View.GONE);
+        textTitle.setVisibility(View.GONE);
+        contentTextView.setVisibility(View.VISIBLE);
+        
+        contentTextView.setText(bean.title);
+        contentTextView.bringToFront();
+        descriptionView.setContentVisible(false);
+        
+        Handler h = new Handler();
+        h.postDelayed(new Runnable()
+        {
+          @Override
+          public void run()
+          {
+            if (listener != null)
+              listener.onLoaded();
+          }
+        }, 2000);
+      }
+    }
+  };
+  
   
   //Load Readability
   @SuppressLint("SetJavaScriptEnabled")
@@ -432,6 +485,7 @@ public class AnimationView extends BaseAnimationView
       public boolean shouldOverrideUrlLoading(WebView view, String url)
       {
         Log.w("WARN", "View url : " + url);
+        h.removeCallbacks(drawingRunnable);
         view.loadUrl(url);
         return true;
       }
@@ -441,17 +495,7 @@ public class AnimationView extends BaseAnimationView
       public void onPageFinished(WebView view, String url)
       {
         super.onPageFinished(view, url);
-        try
-        {
-          if (readabilityWebView != null)
-            readabilityWebView.setEnabled(false);
-        }
-        catch (Exception e)
-        {
-          e.printStackTrace();
-        }
-        if (listener != null)
-          listener.onLoaded();
+        h.postDelayed(drawingRunnable, 5000);
       }
       
       
