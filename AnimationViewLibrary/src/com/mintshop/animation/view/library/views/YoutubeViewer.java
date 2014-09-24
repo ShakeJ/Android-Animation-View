@@ -16,6 +16,7 @@ import com.google.android.youtube.player.YouTubePlayer.ErrorReason;
 import com.google.android.youtube.player.YouTubePlayer.OnInitializedListener;
 import com.google.android.youtube.player.YouTubePlayer.PlaybackEventListener;
 import com.google.android.youtube.player.YouTubePlayer.PlayerStateChangeListener;
+import com.google.android.youtube.player.YouTubePlayer.PlayerStyle;
 import com.google.android.youtube.player.YouTubePlayer.Provider;
 import com.google.android.youtube.player.YouTubePlayerView;
 import com.mintshop.animation.view.library.R;
@@ -28,11 +29,13 @@ public class YoutubeViewer extends RelativeLayout
   private String videoId;
   private AnimationViewListener listener;
   private String youtubeDeveloperKey;
+  private Context context;
   
   
   public YoutubeViewer(Context context)
   {
     super(context);
+    this.context = context;
     init(context);
   }
   
@@ -40,6 +43,7 @@ public class YoutubeViewer extends RelativeLayout
   public YoutubeViewer(Context context, AttributeSet attrs)
   {
     super(context, attrs);
+    this.context = context;
     init(context);
   }
   
@@ -47,6 +51,7 @@ public class YoutubeViewer extends RelativeLayout
   public YoutubeViewer(Context context, AttributeSet attrs, int defStyle)
   {
     super(context, attrs, defStyle);
+    this.context = context;
     init(context);
   }
   
@@ -60,6 +65,8 @@ public class YoutubeViewer extends RelativeLayout
     
     youtubeView = (YouTubePlayerView) view.findViewById(R.id.youtube_view);
     btnNext = (LinearLayout) view.findViewById(R.id.btn_next);
+    if (context.getPackageManager().hasSystemFeature("com.google.android.tv"))
+      btnNext.setVisibility(View.GONE);
     addView(view);
   }
   
@@ -88,6 +95,8 @@ public class YoutubeViewer extends RelativeLayout
     public void onInitializationSuccess(Provider provider, final YouTubePlayer player, boolean wasRestored)
     {
       player.loadVideo(videoId);
+      if (context.getPackageManager().hasSystemFeature("com.google.android.tv"))
+        player.setPlayerStyle(PlayerStyle.CHROMELESS);
       Handler mHandler = new Handler();
       mHandler.postDelayed(new Runnable()
       {
@@ -138,7 +147,6 @@ public class YoutubeViewer extends RelativeLayout
             public void run()
             {
               showNextButton(false);
-//                     listener.hideStatusBar();
             }
           }, 1000);
         }
@@ -161,7 +169,6 @@ public class YoutubeViewer extends RelativeLayout
         @Override
         public void onVideoStarted()
         {
-          YoutubeViewer.this.setVisibility(View.VISIBLE);
           if (listener != null)
             listener.onYoutubeViewerStart();
           
@@ -171,7 +178,6 @@ public class YoutubeViewer extends RelativeLayout
             public void run()
             {
               showNextButton(false);
-//                     listener.hideStatusBar();
             }
           }, 1000);
         }
@@ -180,7 +186,6 @@ public class YoutubeViewer extends RelativeLayout
         @Override
         public void onVideoEnded()
         {
-          YoutubeViewer.this.setVisibility(View.GONE);
           if (listener != null)
             listener.onYoutubeViewerFinish();
           player.release();
@@ -219,6 +224,8 @@ public class YoutubeViewer extends RelativeLayout
         @Override
         public void onError(ErrorReason s)
         {
+          if (!s.name().contains("UNAUTHORIZED_OVERLAY"))
+            setNextMovie();
         }
         
         
@@ -247,23 +254,26 @@ public class YoutubeViewer extends RelativeLayout
   
   private void showNextButton(boolean isShow)
   {
-    if (isShow)
+    if (!context.getPackageManager().hasSystemFeature("com.google.android.tv"))
     {
-      btnNext.bringToFront();
-      btnNext.setVisibility(View.VISIBLE);
-      btnNext.setOnClickListener(new OnClickListener()
+      if (isShow)
       {
-        @Override
-        public void onClick(View v)
+        btnNext.bringToFront();
+        btnNext.setVisibility(View.VISIBLE);
+        btnNext.setOnClickListener(new OnClickListener()
         {
-          Log.w("WARN", "Next button click : " + listener);
-          if (listener != null)
-            listener.onYoutubeViewerFinish();
-          YoutubeViewer.this.setVisibility(View.GONE);
-        }
-      });
+          @Override
+          public void onClick(View v)
+          {
+            Log.w("WARN", "Next button click : " + listener);
+            if (listener != null)
+              listener.onYoutubeViewerFinish();
+            YoutubeViewer.this.setVisibility(View.GONE);
+          }
+        });
+      }
+      else
+        btnNext.setVisibility(View.GONE);
     }
-    else
-      btnNext.setVisibility(View.GONE);
   }
 }
