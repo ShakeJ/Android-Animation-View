@@ -426,6 +426,15 @@ public class AnimationView extends BaseAnimationView
   }
   
   Handler h = new Handler();
+  Runnable notLoadRunnable = new Runnable()
+  {
+    @Override
+    public void run()
+    {
+      if (listener != null)
+        listener.onLoaded();
+    }
+  };
   Runnable drawingRunnable = new Runnable()
   {
     @Override
@@ -495,6 +504,7 @@ public class AnimationView extends BaseAnimationView
       public void onPageFinished(WebView view, String url)
       {
         super.onPageFinished(view, url);
+        h.removeCallbacks(notLoadRunnable);
         h.postDelayed(drawingRunnable, 5000);
       }
       
@@ -510,6 +520,7 @@ public class AnimationView extends BaseAnimationView
     readabilityWebView.getSettings().setSupportMultipleWindows(false);
     readabilityWebView.getSettings().setJavaScriptCanOpenWindowsAutomatically(false);
     readabilityWebView.loadUrl(url);
+    h.postDelayed(notLoadRunnable, 14000);
   }
   
   //Readability
