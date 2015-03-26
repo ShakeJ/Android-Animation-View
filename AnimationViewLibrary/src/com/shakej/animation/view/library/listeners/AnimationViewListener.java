@@ -1,4 +1,4 @@
-package com.mintshop.animation.view.library.listeners;
+package com.shakej.animation.view.library.listeners;
 
 public interface AnimationViewListener
 {

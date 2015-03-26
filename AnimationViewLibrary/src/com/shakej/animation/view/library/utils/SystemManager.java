@@ -1,4 +1,4 @@
-package com.mintshop.animation.view.library.utils;
+package com.shakej.animation.view.library.utils;
 
 import android.annotation.SuppressLint;
 import android.content.Context;

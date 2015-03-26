@@ -1,4 +1,4 @@
-package com.mintshop.animation.view.library.views;
+package com.shakej.animation.view.library.controllers;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -19,8 +19,8 @@ import com.google.android.youtube.player.YouTubePlayer.PlayerStateChangeListener
 import com.google.android.youtube.player.YouTubePlayer.PlayerStyle;
 import com.google.android.youtube.player.YouTubePlayer.Provider;
 import com.google.android.youtube.player.YouTubePlayerView;
-import com.mintshop.animation.view.library.R;
-import com.mintshop.animation.view.library.listeners.AnimationViewListener;
+import com.shakej.animation.view.library.R;
+import com.shakej.animation.view.library.listeners.AnimationViewListener;
 
 public class YoutubeViewer extends RelativeLayout
 {
@@ -63,7 +63,7 @@ public class YoutubeViewer extends RelativeLayout
     LayoutInflater inflate = LayoutInflater.from(context);
     View view = inflate.inflate(R.layout.view_youtube, null);
     
-    youtubeView = (YouTubePlayerView) view.findViewById(R.id.youtube_view);
+//    youtubeView = (YouTubePlayerView) view.findViewById(R.id.youtube_view);
     btnNext = (LinearLayout) view.findViewById(R.id.btn_next);
     if (context.getPackageManager().hasSystemFeature("com.google.android.tv"))
       btnNext.setVisibility(View.GONE);

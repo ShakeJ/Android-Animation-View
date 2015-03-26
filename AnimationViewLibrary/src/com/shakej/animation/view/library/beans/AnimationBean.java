@@ -1,4 +1,4 @@
-package com.mintshop.animation.view.library.beans;
+package com.shakej.animation.view.library.beans;
 
 import java.util.ArrayList;
 

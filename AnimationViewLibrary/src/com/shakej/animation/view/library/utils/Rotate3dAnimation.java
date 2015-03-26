@@ -1,6 +1,6 @@
-package com.mintshop.animation.view.library.utils;
+package com.shakej.animation.view.library.utils;
 
-import com.mintshop.animation.view.library.views.BaseAnimationView;
+import com.shakej.animation.view.library.controllers.BaseAnimationView;
 
 import android.graphics.Camera;
 import android.graphics.Matrix;

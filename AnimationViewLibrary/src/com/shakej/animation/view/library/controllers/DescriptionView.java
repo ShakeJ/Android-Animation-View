@@ -1,4 +1,4 @@
-package com.mintshop.animation.view.library.views;
+package com.shakej.animation.view.library.controllers;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -11,9 +11,9 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.mintshop.animation.view.library.R;
-import com.mintshop.animation.view.library.beans.DescriptionBean;
-import com.mintshop.animation.view.library.utils.ImageDownloader;
+import com.shakej.animation.view.library.R;
+import com.shakej.animation.view.library.beans.DescriptionBean;
+import com.shakej.animation.view.library.utils.ImageDownloader;
 
 @SuppressLint("InflateParams")
 public class DescriptionView extends BaseAnimationView

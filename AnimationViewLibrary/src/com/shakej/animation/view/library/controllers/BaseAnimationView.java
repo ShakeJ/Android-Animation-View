@@ -1,4 +1,4 @@
-package com.mintshop.animation.view.library.views;
+package com.shakej.animation.view.library.controllers;
 
 import android.animation.Animator;
 import android.animation.Animator.AnimatorListener;
@@ -14,10 +14,10 @@ import android.view.animation.TranslateAnimation;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
-import com.mintshop.animation.view.library.R;
-import com.mintshop.animation.view.library.listeners.AnimationViewListener;
-import com.mintshop.animation.view.library.utils.Rotate3dAnimation;
-import com.mintshop.animation.view.library.utils.SystemManager;
+import com.shakej.animation.view.library.R;
+import com.shakej.animation.view.library.listeners.AnimationViewListener;
+import com.shakej.animation.view.library.utils.Rotate3dAnimation;
+import com.shakej.animation.view.library.utils.SystemManager;
 
 public class BaseAnimationView extends LinearLayout
 {
@@ -31,6 +31,7 @@ public class BaseAnimationView extends LinearLayout
   public int direction = PIVOT_UP_TO_DOWN;
   protected final static int DELAY_TIME = 1000;
   public int slideShowTime = 1000;
+  public int delayTime = DELAY_TIME;
   
   private Context context;
   public AnimationViewListener listener;

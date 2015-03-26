@@ -1,4 +1,4 @@
-package com.mintshop.animation.view.library.views;
+package com.shakej.animation.view.library.views;
 
 import java.util.ArrayList;
 
@@ -25,13 +25,17 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.mintshop.animation.view.library.R;
-import com.mintshop.animation.view.library.beans.AnimationBean;
-import com.mintshop.animation.view.library.beans.DescriptionBean;
-import com.mintshop.animation.view.library.listeners.AnimationViewListener;
-import com.mintshop.animation.view.library.utils.ImageDownloader;
-import com.mintshop.animation.view.library.utils.ImageUtil;
-import com.mintshop.animation.view.library.utils.SystemManager;
+import com.shakej.animation.view.library.R;
+import com.shakej.animation.view.library.beans.AnimationBean;
+import com.shakej.animation.view.library.beans.DescriptionBean;
+import com.shakej.animation.view.library.controllers.BaseAnimationView;
+import com.shakej.animation.view.library.controllers.DescriptionListAdapter;
+import com.shakej.animation.view.library.controllers.DescriptionView;
+import com.shakej.animation.view.library.controllers.YoutubeViewer;
+import com.shakej.animation.view.library.listeners.AnimationViewListener;
+import com.shakej.animation.view.library.utils.ImageDownloader;
+import com.shakej.animation.view.library.utils.ImageUtil;
+import com.shakej.animation.view.library.utils.SystemManager;
 
 public class AnimationView extends BaseAnimationView
 {
@@ -95,7 +99,6 @@ public class AnimationView extends BaseAnimationView
     customViewContainer = (RelativeLayout) inflatedView.findViewById(R.id.container_custom_view);
     readabilityWebView = (WebView) inflatedView.findViewById(R.id.readability_web_view);
     youtubeViewer = (YoutubeViewer) inflatedView.findViewById(R.id.youtube_viewer);
-    
     imageContainer = (RelativeLayout) inflatedView.findViewById(R.id.container_image);
     contentImageView = (ImageView) inflatedView.findViewById(R.id.content_image);
     
@@ -168,13 +171,11 @@ public class AnimationView extends BaseAnimationView
     
     if (!TextUtils.isEmpty(bean.pictureOriginalUrl))
     {
-      // 이미지인 경우
       Log.w("WARN", "AnimationView setData - Image");
       new ImageDownloaderTask().execute(bean.pictureOriginalUrl);
     }
     else
     {
-      // 텍스트만 있는 경우
       if (!TextUtils.isEmpty(bean.readabilityUrl))
       {
         Log.w("WARN", "AnimationView setData - Readability");
@@ -215,7 +216,6 @@ public class AnimationView extends BaseAnimationView
   }
   
   
-  //커스텀한 뷰를 만들어서 붙이면 애니메이션
   public void setView(View view)
   {
     Log.w("WARN", "AnimationView set CustomView");
@@ -258,7 +258,6 @@ public class AnimationView extends BaseAnimationView
   }
   
   
-  //디스크립션 상자들이 리스트로 나타남 
   public void setStringArray(ArrayList<DescriptionBean> descriptions)
   {
     Log.w("WARN", "AnimationView set String Array");
@@ -286,7 +285,12 @@ public class AnimationView extends BaseAnimationView
   }
   
   
-  //유튜브 
+  public void setDelayTime(int delayTime)
+  {
+    super.delayTime = delayTime;
+  }
+  
+  
   public void setMovie(String youtubeDeveloperKey, String videoId)
   {
     isYoutubeMode = true;

@@ -1,4 +1,4 @@
-package com.mintshop.animation.view.library.views;
+package com.shakej.animation.view.library.controllers;
 
 import java.util.ArrayList;
 
@@ -15,10 +15,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.mintshop.animation.view.library.R;
-import com.mintshop.animation.view.library.beans.DescriptionBean;
-import com.mintshop.animation.view.library.utils.ImageDownloader;
-import com.mintshop.animation.view.library.utils.SystemManager;
+import com.shakej.animation.view.library.R;
+import com.shakej.animation.view.library.beans.DescriptionBean;
+import com.shakej.animation.view.library.utils.ImageDownloader;
+import com.shakej.animation.view.library.utils.SystemManager;
 
 public class DescriptionListAdapter extends BaseAdapter
 {
